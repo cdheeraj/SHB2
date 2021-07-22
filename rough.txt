@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>advance search</title>
+<script>
+function a_search()
+{
+
+if(document.getElementById("from").value == ""){
+	alert("Please enter minimum price");
+	return 0;
+}
+if(document.getElementById("to").value == ""){
+	alert("Please enter maximum price");
+	return 0;
+	}
+	if(document.getElementById("provider").value == "0"){
+	alert("Please select provider");
+	return 0;
+	}
+document.search.action="advance_search.php?view=yes";
+document.search.method="post";
+document.search.submit();
+}
+function gohome()
+{
+document.search.action="home.php";
+		document.search.method="post";
+		document.search.submit();
+		}
+
+
+</script>
+</head>
+<body background="search.jpg" text="grey">
+<form name="search">
+<p align="center"><img src="2222.jpg" height="120" width="1300"></p>
+<img src="home.jpg" height="45" width="60" onclick="gohome()">
+<?php
+include "dbconnect.php";
+$query="select distinct Service from provider";
+$result=$link->query($query);
+$options="";
+while($row=mysqli_fetch_array($result))
+{
+	$options =$options. "<option  value='$row[0]'>$row[0]</option>";
+}
+?>
+<h1>Advance Search</h1>
+Minimum Price<input type="text" name="from" id="from"><br>Maximum Price<input type="text" name="to" id="to"><br><select name='provider' id='provider'><option value='0'>Select Service</option><?php echo $options; ?></select></br>
+
+<table border="1" cellpadding="6" cellspacing="1">
+<?php
+include"dbconnect.php";
+$flag=0;
+if(isset($_GET['view'])){
+
+$from=$_POST["from"];
+$to=$_POST["to"];
+$provider=$_POST["provider"];
+
+$query="select * from provider where Service='$provider' and Price<'$to' and Price>'$from'";
+$result=$link->query($query);
+
+while($row=mysqli_fetch_array($result))
+{ 
+$flag=1;
+	echo "<tr>";
+	echo "<td>";
+	?>
+	<font face="lucida fax"><i>
+	<?php
+	echo $row[1];
+	echo "</td>";
+	echo "<td>";
+	echo $row[2];
+	echo "</td>";
+	echo "<td>";
+	echo $row[3];
+	echo "</td>";
+	echo "<td>";
+	echo $row[4];
+	echo "</td>";
+	echo "<td>";
+	echo $row[5];
+	echo "</td>";
+	echo "<td>";
+	echo $row[6];
+	echo "</td>";
+	echo "</tr>";
+}
+
+}
+if($flag==0)
+echo "Not found";
+else
+?>
+</table>
+<input type="button" value="Submit" onclick="a_search()">
+</body>
+</html>
